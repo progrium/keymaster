@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>{% block title %}The Keymaster - Encrypted keys for the cloud{% endblock %}</title>
+    <link href="/static/style.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="header">
+        <h1><img src="/favicon.ico" width="20" height="20" style="position: relative; left: 2px;"/> The Keymaster</h1>
+      </div>
+      <div id="content">
+        <div style="float: right;">
+          {% if user %}
+          {{ user.nickname }} | <a href="{{ logout_url }}">Logout</a>
+          {% endif %}
+        </div>
+        <br />
+
+				{% if user %}
+				  <dl>
+				    {% for key in keys %}
+				    <dt><strong>{{ key.name }}</strong></dt>
+					  <dd><input type="text" value="{{ key }}" readonly="readonly" size="70" onclick="this.select()" /> <form style="display:inline;" onsubmit="return confirm('Are you sure?')" action="/" method="post"><input type="hidden" name="hash" value="{{ key.hash }}" /><input type="submit" value="Delete" /></form></dd>
+				    <dd> &lfloor; {{ key.callback_url }} </dd>
+				    {% endfor %}
+				  </dl>
+				
+					<p>To get your decrypted key, POST to the key URL (the long one with the hash) passing the secret that was emailed to you in the parameter "secret". Then Keymaster will POST to your callback URL with the parameter "key" containing your decrypted key.</p>
+				
+				  <hr />
+				  <strong>New Key</strong><br />
+				  <form action="/" method="post">
+					  Name: <br /><input type="text" name="name" /><br />
+				    Callback URL: <br /><input type="text" name="callback_url" /><br />
+				    Key Data: <br /><textarea name="data"></textarea><br />
+				    <input type="submit" value="Save Key" /> <small>You will be emailed the secret</small>
+				    </form>
+
+
+				{% else %}
+				  <p>The Keymaster provides encrypted key hosting for the cloud. Particularly useful in situations such as when the web service you're running is open source. Where do you keep the keys and passwords it needs to use? Certainly not in the source. Instead, use the Keymaster. The Keymaster will host an encrypted version of your key, and will POST it decrypted to a predefined, trusted URL when you POST to Keymaster with the encryption secret to unlock it.</p>
+				  <h2 align="center"><a href="{{ login_url }}">Login with Google</a></h2>
+				{% endif %}
+      </div>
+			<div id="footer"><a href="http://github.com/progrium/keymaster">Source Code</a></div>
+    </div>
+		<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+		try {
+		var pageTracker = _gat._getTracker("UA-6824126-12");
+		pageTracker._trackPageview();
+		} catch(err) {}</script>
+  </body>
+</html>
